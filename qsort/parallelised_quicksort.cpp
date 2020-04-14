@@ -89,7 +89,9 @@ int main(int argc, char* argv[]){
           )/ 1000000.0;
     printf("Parallelised quicksort processed in: %lf sec.\n", dur);
 
-    return 0;
+    free(dlst);
+    free(dlstonhold);
+    pthread_exit(NULL);
 }
 
 
@@ -100,6 +102,7 @@ void swap(double lst[], int x, int y){
     lst[y] = temp;
 }
 
+// ordinary qsort logic
 int partitioner(double lst[], int first, int last){
     int b = first;
     int r = (int)(first + (last-first) * (1.0 * rand() / RAND_MAX));
@@ -115,6 +118,7 @@ int partitioner(double lst[], int first, int last){
     return b;
 }
 
+// qsort helper
 void helper(double lst[], int first, int last){
     if (first >= last) return;
     int b = partitioner(lst, first, last);
@@ -122,10 +126,12 @@ void helper(double lst[], int first, int last){
     helper(lst, b+1, last);
 }
 
+// encapsulating function calling helper
 void qsort(double lst[], int size){
     helper(lst, 0, size-1);
 }
 
+// useful when NUM goes insanely high
 int isSorted(double lst[], int size){
     for (int i = 0; i< size; i++){
         if (lst[i] < lst[i-1]){
@@ -137,6 +143,7 @@ int isSorted(double lst[], int size){
     return 1; // ascendingly sorted
 }
 
+// initialise a phelper pthread
 void  pqsort(double dlst[], int size, int thlvl){
     int cval;
     void* status;
@@ -145,6 +152,8 @@ void  pqsort(double dlst[], int size, int thlvl){
     pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
 
+    // encapsulating data for
+    // pthread_create
     struct th_data thd;
     thd.dlst = dlst;
     thd.fst  = 0;
@@ -160,7 +169,8 @@ void  pqsort(double dlst[], int size, int thlvl){
     if(cval) { printf("ERROR: failed to join thread\n"); exit(-1); }
 }
 
-
+// calling partitioner and create phelper thread to solve the left and
+// right sides
 void* phelper(void* tharg){
     int t, cval, mid;
     void* status;
@@ -186,6 +196,8 @@ void* phelper(void* tharg){
         th_data_array[t].lv   = thdata->lv - 1;
     }
 
+    //  [0].fst ------ [0].lst --- [1].fst --- [1].lst
+    //  thdata->fst -- (mid-1) --- (mid+1) --- thdata->lst
     th_data_array[0].fst = thdata->fst;
     th_data_array[0].lst = mid - 1;
     th_data_array[1].fst = mid + 1;
