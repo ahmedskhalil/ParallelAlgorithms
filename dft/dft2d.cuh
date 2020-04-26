@@ -55,7 +55,7 @@ __global__ void dft2dkernel2(float* output_re, float* output_im,
 
 }
 
-// MODD
+
 __global__ void dft2dkernel3(float* output_re, float* output_im, 
     const float* input, size_t M, size_t N)
 {
