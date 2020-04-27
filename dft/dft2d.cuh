@@ -76,7 +76,7 @@ __global__ void dft2dkernel3(float* output_re, float* output_im,
 
         }
     }
-    atomicAdd(&output_re[k * N + l], real);
-    atomicAdd(&output_im[k * N + l], imag);
+    output_re[k * N + l] = realkl;
+    output_im[k * N + l] = imagkl;
 
 }
