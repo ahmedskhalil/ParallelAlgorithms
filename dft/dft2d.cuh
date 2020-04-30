@@ -205,3 +205,6 @@ __global__ void idft2dkernel2(float* output_re, float* output_im,
     output_re[m*N + n] = real;
     output_im[m*N + n] = imag;
 }
+
+void dft(float* output_re, float* output_im, const float* input, 
+    size_t M, size_t N, const int nBlocks, const int nThreads)
