@@ -27,7 +27,7 @@ matrix:
       dist: bionic
 
 before_install:
-  - DEPS_DIR="${TRAVIS_BUILD_DIR/deps}"
+  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
   - mkdir ${DEPS_DIR} && cd ${DEPS_DIR}
   - travis_retry wget --no-check-certificate https://cmake.org/files/v3.16/cmake-3.16.0-Linux-x86_64.tar.gz
   - echo "85f55f13c922c853049edcf37c828b02b9b2fc00729d0cbb56cf20181a39340b *cmake-3.16.0-Linux-x86_64.tar.gz" > cmake_md5.txt
