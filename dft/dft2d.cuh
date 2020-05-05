@@ -206,5 +206,21 @@ __global__ void idft2dkernel2(float* output_re, float* output_im,
     output_im[m*N + n] = imag;
 }
 
-void dft(float* output_re, float* output_im, const float* input, 
-    size_t M, size_t N, const int nBlocks, const int nThreads)
+void dft2d(float* output_re, float* output_im, const float* input, 
+    size_t M, size_t N, const dim3 nBlocks, const dim3 nThreads)
+{
+    cudaMemset(output_re, 0, M*N * sizeof(float));
+    cudaMemset(output_im, 0, M*N * sizeof(float));
+
+    size_t sharedSize = numThreads.x * numThreads.y * sizeof(float);
+
+    dft2dkernel4<<<nBlocks, nThreads, sharedSize>>>(output_re, output_im, input, M,N);
+}
+
+void idft2d(float* output_re, float* output_im, 
+    const float* input_re, const float* input_im,
+    size_t M, size_t N, const dim3 nBlocks, const dim3 nThreads)
+{
+    size_t sharedSize = 2 * nThreads.x*nThreads.y * sizeof(float);
+    idft2dkernel2<<<nBlocks, nThreads, sharedSize>>>(output_re, output_im, input_re, input_im, M, N);
+}
