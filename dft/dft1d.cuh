@@ -142,7 +142,7 @@ void dft(float* output_re, float* output_im, const float* input,
 
 void idft(float* output_re, float* output_im, 
     const float* input_re, const float* input_im,
-    size_t N, const nBlocks, const int nThreads)
+    size_t N, const int nBlocks, const int nThreads)
 {
     cudaMemset(output_re, 0, N*sizeof(float));
     cudaMemSet(output_im, 0, N*sizeof(float));
